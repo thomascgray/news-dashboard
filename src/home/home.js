@@ -6,6 +6,8 @@ import RedditUkNews from '../panel_fulfiller/reddit_unitedkingdom';
 import BBCNews from '../panel_fulfiller/bbc_news';
 import TechRadar from '../panel_fulfiller/techradar';
 import Subreddit from '../panel_fulfiller/core/subreddit';
+import Hackernews from '../panel_fulfiller/hackernews';
+
 import Promise from 'bluebird';
 import _ from 'lodash';
 
@@ -16,9 +18,8 @@ class Home extends Component {
             tempSubredditName: '',
             panels: null,
             panelKeys: [
-                'subreddit_webdev',
-                'subreddit_worldnews',
-                'subreddit_ukpolitics',
+                'hackernews',
+                'subreddit_webdev'
             ],
         };
 
@@ -47,9 +48,15 @@ class Home extends Component {
     }
 
     resolvePanelKey(panelKey) {
+        // subreddits
         if (_.startsWith(panelKey, 'subreddit_')) {
             const subredditName = panelKey.replace('subreddit_', '');
             return Subreddit.fulfill(subredditName);
+        }
+
+        switch (panelKey) {
+            case 'hackernews':
+            return Hackernews.fulfill();
         }
     }
 

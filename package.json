@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.17.1",
     "bluebird": "^3.5.1",
+    "cheerio": "^1.0.0-rc.2",
     "compromise": "^11.1.0",
     "lodash": "^4.17.4",
     "react": "^16.1.1",
