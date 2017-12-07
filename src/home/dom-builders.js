@@ -5,3 +5,7 @@ function buildCurrentPanelList(panelKeys) {
         return (<li>{ panelKey } - <button onClick={() => this.removePanelViaKey(panelKey)}>X</button></li>);
     });
 }
+
+module.exports = {
+    buildCurrentPanelList
+};

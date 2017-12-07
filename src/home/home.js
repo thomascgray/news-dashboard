@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 
 import Panel from '../panel/panel'
-import RedditWorldNews from '../panel_fulfiller/reddit_world_news';
-import RedditUkNews from '../panel_fulfiller/reddit_unitedkingdom';
-import BBCNews from '../panel_fulfiller/bbc_news';
-import TechRadar from '../panel_fulfiller/techradar';
-import Subreddit from '../panel_fulfiller/core/subreddit';
-import Hackernews from '../panel_fulfiller/hackernews';
-
+import BBCNews from '../news_sources/bbc_news';
+import TechRadar from '../news_sources/techradar';
+import Subreddit from '../news_sources/core/subreddit';
+import Hackernews from '../news_sources/hackernews';
 import Promise from 'bluebird';
 import _ from 'lodash';
 
@@ -15,35 +12,26 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tempSubredditName: '',
-            panels: null,
-            panelKeys: [
-                'hackernews',
-                'subreddit_webdev'
+            panels: [],
+            loadedNewsSources: [
+                {
+                    name: 'BBC News',
+                    key: 'bbc-news',
+                },
             ],
         };
-
-        this.handleTempSubredditName = this.handleTempSubredditName.bind(this);
-        this.addNewSubredditToPanels = this.addNewSubredditToPanels.bind(this);
     }
 
-    refetchAllPanelData() {
+    refreshAllPanels() {
         const panels = [];
-        Promise.all(this.resolvePanelKeys(this.state.panelKeys))
-            .then(fulfilledPanelPromises => {
-                fulfilledPanelPromises.forEach(panelData => {
-                    panels.push(<Panel linkset={panelData.links} data={panelData.data} />);
-                });
-                this.setState({ panels })
-            })
-            .catch(err => {
-                console.log(err);
+        this.setState({ panels });
+        this.state.loadedNewsSources.map(newsSource => {
+            return this.fulfillNewsSource(newsSource);
+        }).forEach(fulfilledNewsSource => {
+            fulfilledNewsSource.then(panelData => {
+                panels.push(<Panel key={panelData.data.title} linkset={panelData.links} data={panelData.data} />);
+                this.setState({ panels });
             });
-    }
-
-    resolvePanelKeys() {
-        return this.state.panelKeys.map(panelKey => {
-            return this.resolvePanelKey(panelKey);
         });
     }
 
@@ -52,48 +40,37 @@ class Home extends Component {
      * fulfiller .fulfill() method
      * @param {string} panelKey 
      */
-    resolvePanelKey(panelKey) {
+    fulfillNewsSource(newsSource) {
         // subreddits
-        if (_.startsWith(panelKey, 'subreddit_')) {
-            const subredditName = panelKey.replace('subreddit_', '');
+        if (_.startsWith(newsSource.key, 'subreddit_')) {
+            const subredditName = newsSource.key.replace('subreddit_', '');
             return Subreddit.fulfill(subredditName);
         }
 
-        switch (panelKey) {
+        switch (newsSource.key) {
             case 'hackernews':
-            return Hackernews.fulfill();
+                return Hackernews.fulfill(newsSource);
+            case 'bbc-news':
+                return BBCNews.fulfill(newsSource);
         }
     }
 
     componentWillMount() {
-        this.refetchAllPanelData();
+        this.refreshAllPanels();
     }
 
-    removePanelViaKey(panelKey) {
-        const panelKeys = _.clone(this.state.panelKeys);
-        _.remove(panelKeys, k => k === panelKey);
-        this.setState({ panelKeys }, () => {
-            this.refetchAllPanelData();
+    removePanelViaKey(newsSourceToRemove) {
+        const loadedNewsSources = _.clone(this.state.loadedNewsSources);
+        _.remove(loadedNewsSources, k => k.key === newsSourceToRemove.key);
+        this.setState({ loadedNewsSources }, () => {
+            console.log(this.state.loadedNewsSources);
+            this.refreshAllPanels();
         });
     }
 
     buildCurrentPanelList() {
-        return this.state.panelKeys.map(panelKey => {
-            return (<li>{ panelKey } - <button onClick={() => this.removePanelViaKey(panelKey)}>X</button></li>);
-        });
-    }
-
-    handleTempSubredditName(event) {
-        const tempSubredditName = _.trim(event.target.value);
-        this.setState({ tempSubredditName });
-    }
-
-    addNewSubredditToPanels(newSubreddit) {
-        const panelKeys = _.clone(this.state.panelKeys);
-        panelKeys.push('subreddit_' + newSubreddit.trim());
-        const tempSubredditName = '';
-        this.setState({ panelKeys, tempSubredditName }, () => {
-            this.refetchAllPanelData();
+        return this.state.loadedNewsSources.map(newsSource => {
+            return (<li key={newsSource.key} >{ newsSource.name } - <button onClick={() => this.removePanelViaKey(newsSource)}>X</button></li>);
         });
     }
 
@@ -105,7 +82,7 @@ class Home extends Component {
                 </div>
 
                 <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    Launch demo modal
+                    Load/Unload News Sources
                 </button>
 
                 <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -122,11 +99,6 @@ class Home extends Component {
                                 <ul>
                                     { this.buildCurrentPanelList() }
                                 </ul>
-
-                                new subreddit:
-                                <input type="text" value={this.state.tempSubredditName} onChange={this.handleTempSubredditName} />
-                                <button onClick={() => this.addNewSubredditToPanels(this.state.tempSubredditName)}>add subreddit</button>
-
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>

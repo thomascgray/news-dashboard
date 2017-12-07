@@ -1,13 +1,12 @@
 import Promise from 'bluebird';
-import Request from 'request';
-import Cheerio from 'cheerio';
 import Axios from 'axios';
 
-class Hackernews {
-    static fulfill() {
-        return Axios.get('https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty')
+class BBCNews {
+    static fulfill(newsSource) {
+        const url = 'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Ffeeds.bbci.co.uk%2Fnews%2Fuk%2Frss.xml%3Fedition%3Duk';
+        return Axios.get(url)
             .then(response => {
-                response.data.length = 10;
+                console.log(response);
                 const storyPromises = response.data.map(storyId => Axios.get(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json?print=pretty`));
                 return Promise.all(storyPromises);
             })
@@ -16,7 +15,6 @@ class Hackernews {
             })
             .then(stories => {
                 return stories.map(story => {
-                    console.log(story);
                     const description = [
                         'Posted: ' + new Date(story.time * 1000),
                     ].join(' - ');
@@ -31,11 +29,11 @@ class Hackernews {
                 return {
                     links,
                     data: {
-                        title: 'Hackernews'
+                        title: newsSource.name
                     },
                 }
             });
     }
 }
   
-export default Hackernews;
+export default BBCNews;
