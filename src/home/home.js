@@ -27,7 +27,7 @@ class Home extends Component {
         this.addNewSubredditToPanels = this.addNewSubredditToPanels.bind(this);
     }
 
-    updatePanels() {
+    refetchAllPanelData() {
         const panels = [];
         Promise.all(this.resolvePanelKeys(this.state.panelKeys))
             .then(fulfilledPanelPromises => {
@@ -47,6 +47,11 @@ class Home extends Component {
         });
     }
 
+    /**
+     * given a key for a panel, return the promise from that panels
+     * fulfiller .fulfill() method
+     * @param {string} panelKey 
+     */
     resolvePanelKey(panelKey) {
         // subreddits
         if (_.startsWith(panelKey, 'subreddit_')) {
@@ -61,14 +66,14 @@ class Home extends Component {
     }
 
     componentWillMount() {
-        this.updatePanels();
+        this.refetchAllPanelData();
     }
 
     removePanelViaKey(panelKey) {
         const panelKeys = _.clone(this.state.panelKeys);
         _.remove(panelKeys, k => k === panelKey);
         this.setState({ panelKeys }, () => {
-            this.updatePanels();
+            this.refetchAllPanelData();
         });
     }
 
@@ -83,13 +88,12 @@ class Home extends Component {
         this.setState({ tempSubredditName });
     }
 
-    addNewSubredditToPanels() {
-        console.log('helloasdasds222222222222');
+    addNewSubredditToPanels(newSubreddit) {
         const panelKeys = _.clone(this.state.panelKeys);
-        panelKeys.push('subreddit_' + this.state.tempSubredditName);
+        panelKeys.push('subreddit_' + newSubreddit.trim());
         const tempSubredditName = '';
         this.setState({ panelKeys, tempSubredditName }, () => {
-            this.updatePanels();
+            this.refetchAllPanelData();
         });
     }
 
@@ -121,7 +125,7 @@ class Home extends Component {
 
                                 new subreddit:
                                 <input type="text" value={this.state.tempSubredditName} onChange={this.handleTempSubredditName} />
-                                <button onClick={this.addNewSubredditToPanels}>add subreddit</button>
+                                <button onClick={() => this.addNewSubredditToPanels(this.state.tempSubredditName)}>add subreddit</button>
 
                             </div>
                             <div className="modal-footer">
