@@ -7,23 +7,13 @@ class BBCNews {
         return Axios.get(url)
             .then(response => {
                 console.log(response);
-                const storyPromises = response.data.map(storyId => Axios.get(`https://hacker-news.firebaseio.com/v0/item/${storyId}.json?print=pretty`));
-                return Promise.all(storyPromises);
-            })
-            .then(storyResponses => {
-                return storyResponses.map(storyResponse => storyResponse.data);
-            })
-            .then(stories => {
-                return stories.map(story => {
-                    const description = [
-                        'Posted: ' + new Date(story.time * 1000),
-                    ].join(' - ');
+                return response.data.items.map(item => {
                     return {
-                        title: story.title,
-                        description,
-                        url: story.url,
+                        title: item.title,
+                        description: item.description,
+                        url: item.link,
                     };
-                })
+                });
             })
             .then(links => {
                 return {
@@ -31,8 +21,8 @@ class BBCNews {
                     data: {
                         title: newsSource.name
                     },
-                }
-            });
+                };
+            })
     }
 }
   
