@@ -63,14 +63,13 @@ class Home extends Component {
         const loadedNewsSources = _.clone(this.state.loadedNewsSources);
         _.remove(loadedNewsSources, k => k.key === newsSourceToRemove.key);
         this.setState({ loadedNewsSources }, () => {
-            console.log(this.state.loadedNewsSources);
             this.refreshAllPanels();
         });
     }
 
     buildCurrentPanelList() {
         return this.state.loadedNewsSources.map(newsSource => {
-            return (<li key={newsSource.key} >{ newsSource.name } - <button onClick={() => this.removePanelViaKey(newsSource)}>X</button></li>);
+            return (<li key={newsSource.key} >{newsSource.name} - <button onClick={() => this.removePanelViaKey(newsSource)}>X</button></li>);
         });
     }
 
@@ -78,7 +77,7 @@ class Home extends Component {
         return (
             <div className='container'>
                 <div className='row'>
-                    { this.state.panels }
+                    {this.state.panels}
                 </div>
 
                 <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -97,7 +96,7 @@ class Home extends Component {
                             <div className="modal-body">
                                 <p>Currently enabled panels are:</p>
                                 <ul>
-                                    { this.buildCurrentPanelList() }
+                                    {this.buildCurrentPanelList()}
                                 </ul>
                             </div>
                             <div className="modal-footer">
