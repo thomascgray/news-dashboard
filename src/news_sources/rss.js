@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import $ from 'jquery';
 
-class BBCNews {
+class Rss {
     static fulfill(rssFeed) {
         return new Promise((resolve, reject) => {
             $(document).ready(function () {
@@ -32,4 +32,4 @@ class BBCNews {
     }
 }
   
-export default BBCNews;
+export default Rss;

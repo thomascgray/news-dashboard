@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Panel from '../panel/panel'
 import BBCNews from '../news_sources/bbc_news';
+import Rss from '../news_sources/rss';
 import TechRadar from '../news_sources/techradar';
 import Subreddit from '../news_sources/core/subreddit';
 import Hackernews from '../news_sources/hackernews';
@@ -15,16 +16,27 @@ class Home extends Component {
             panels: [],
             loadedNewsSources: [
                 {
-                    name: 'BBC News',
-                    key: 'bbc-news',
+                    type: 'rss',
+                    meta: {
+                        url: 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk'
+                    },
                 },
+                {
+                    type: 'rss',
+                    meta: {
+                        url: 'http://feeds.feedburner.com/RockPaperShotgun',
+                    },
+                }
             ],
         };
     }
 
     refreshAllPanels() {
         const panels = [];
+        
+        // reset all the panels
         this.setState({ panels });
+
         this.state.loadedNewsSources.map(newsSource => {
             return this.fulfillNewsSource(newsSource);
         }).forEach(fulfilledNewsSource => {
@@ -41,17 +53,9 @@ class Home extends Component {
      * @param {string} panelKey 
      */
     fulfillNewsSource(newsSource) {
-        // subreddits
-        if (_.startsWith(newsSource.key, 'subreddit_')) {
-            const subredditName = newsSource.key.replace('subreddit_', '');
-            return Subreddit.fulfill(subredditName);
-        }
-
-        switch (newsSource.key) {
-            case 'hackernews':
-                return Hackernews.fulfill(newsSource);
-            case 'bbc-news':
-                return BBCNews.fulfill(newsSource);
+        switch (newsSource.type) {
+            case 'rss': 
+                return Rss.fulfill(newsSource.meta);
         }
     }
 
