@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 
-import Panel from '../panel/panel'
-import BBCNews from '../news_sources/bbc_news';
+import Panel from '../panel/panel';
 import Rss from '../news_sources/rss';
-import TechRadar from '../news_sources/techradar';
-import Subreddit from '../news_sources/core/subreddit';
-import Hackernews from '../news_sources/hackernews';
-import Promise from 'bluebird';
+import Subreddit from '../news_sources/subreddit';
 import _ from 'lodash';
+import AddNewsSource from '../add-news-source/add-news-source';
 
 class Home extends Component {
     constructor(props) {
@@ -17,14 +14,23 @@ class Home extends Component {
             loadedNewsSources: [
                 {
                     type: 'rss',
+                    title: 'BBC News',
                     meta: {
                         url: 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk'
                     },
                 },
                 {
                     type: 'rss',
+                    title: 'Rock, Paper, Shotgun',
                     meta: {
                         url: 'http://feeds.feedburner.com/RockPaperShotgun',
+                    },
+                },
+                {
+                    type: 'subreddit',
+                    title: '/r/webdev',
+                    meta: {
+                        subreddit: 'webdev',
                     },
                 }
             ],
@@ -56,6 +62,10 @@ class Home extends Component {
         switch (newsSource.type) {
             case 'rss': 
                 return Rss.fulfill(newsSource.meta);
+            case 'subreddit': 
+                return Subreddit.fulfill(newsSource.meta);
+            default:
+                return Promise.reject();
         }
     }
 
@@ -63,9 +73,9 @@ class Home extends Component {
         this.refreshAllPanels();
     }
 
-    removePanelViaKey(newsSourceToRemove) {
+    removeNewsSource(newsSourceToRemove) {
         const loadedNewsSources = _.clone(this.state.loadedNewsSources);
-        _.remove(loadedNewsSources, k => k.key === newsSourceToRemove.key);
+        _.remove(loadedNewsSources, k => k.title === newsSourceToRemove.title);
         this.setState({ loadedNewsSources }, () => {
             this.refreshAllPanels();
         });
@@ -73,7 +83,12 @@ class Home extends Component {
 
     buildCurrentPanelList() {
         return this.state.loadedNewsSources.map(newsSource => {
-            return (<li key={newsSource.key} >{newsSource.name} - <button onClick={() => this.removePanelViaKey(newsSource)}>X</button></li>);
+            return (
+                <li key={newsSource.title} className="list-group-item d-flex justify-content-between align-items-center">
+                    <strong>{newsSource.title}</strong>
+                    <span onClick={() => {this.removeNewsSource(newsSource)}} className="badge badge-danger badge-pill"><span aria-hidden="true">&times;</span></span>
+                </li>
+            );
         });
     }
 
@@ -99,13 +114,11 @@ class Home extends Component {
                             </div>
                             <div className="modal-body">
                                 <p>Currently enabled panels are:</p>
-                                <ul>
+                                <div className="list-group">
                                     {this.buildCurrentPanelList()}
-                                </ul>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save changes</button>
+                                </div>
+                                <hr />
+                                <AddNewsSource />
                             </div>
                         </div>
                     </div>
