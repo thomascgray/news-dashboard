@@ -4,7 +4,7 @@ import Panel from '../panel/panel';
 import Rss from '../news_sources/rss';
 import Subreddit from '../news_sources/subreddit';
 import _ from 'lodash';
-import AddNewsSource from '../add-news-source/add-news-source';
+import LoadUnloadNewsSources from '../components/load-unload-news-sources';
 
 class Home extends Component {
     constructor(props) {
@@ -80,16 +80,13 @@ class Home extends Component {
             this.refreshAllPanels();
         });
     }
+    
+    addNewRssFeed(rssFeed) {
+        
+    }
 
-    buildCurrentPanelList() {
-        return this.state.loadedNewsSources.map(newsSource => {
-            return (
-                <li key={newsSource.title} className="list-group-item d-flex justify-content-between align-items-center">
-                    <strong>{newsSource.title}</strong>
-                    <span onClick={() => {this.removeNewsSource(newsSource)}} className="badge badge-danger badge-pill"><span aria-hidden="true">&times;</span></span>
-                </li>
-            );
-        });
+    addNewSubreddit(subreddit) {
+        
     }
 
     render() {
@@ -103,26 +100,12 @@ class Home extends Component {
                     Load/Unload News Sources
                 </button>
 
-                <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Currently enabled panels are:</p>
-                                <div className="list-group">
-                                    {this.buildCurrentPanelList()}
-                                </div>
-                                <hr />
-                                <AddNewsSource />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <LoadUnloadNewsSources
+                    removeNewsSource={newsSource => this.removeNewsSource(newsSource)}
+                    loadedNewsSources={this.state.loadedNewsSources}
+                    addNewRssFeed={rssFeed => this.addNewRssFeed(rssFeed)}
+                    addNewSubreddit={subreddit => this.addNewSubreddit(subreddit)}
+                />
             </div>
         );
     }
