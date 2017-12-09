@@ -5,6 +5,7 @@ import Rss from '../news_sources/rss';
 import Subreddit from '../news_sources/subreddit';
 import _ from 'lodash';
 import LoadUnloadNewsSources from '../components/load-unload-news-sources';
+import Footer from '../components/footer';
 
 class Home extends Component {
     constructor(props) {
@@ -91,21 +92,22 @@ class Home extends Component {
 
     render() {
         return (
-            <div className='container'>
-                <div className='row'>
-                    {this.state.panels}
+            <div>
+                <div className='container'>
+                    <div className='row'>
+                        {this.state.panels}
+                    </div>
+
+                    
+
+                    <LoadUnloadNewsSources
+                        removeNewsSource={newsSource => this.removeNewsSource(newsSource)}
+                        loadedNewsSources={this.state.loadedNewsSources}
+                        addNewRssFeed={rssFeed => this.addNewRssFeed(rssFeed)}
+                        addNewSubreddit={subreddit => this.addNewSubreddit(subreddit)}
+                    />
                 </div>
-
-                <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    Load/Unload News Sources
-                </button>
-
-                <LoadUnloadNewsSources
-                    removeNewsSource={newsSource => this.removeNewsSource(newsSource)}
-                    loadedNewsSources={this.state.loadedNewsSources}
-                    addNewRssFeed={rssFeed => this.addNewRssFeed(rssFeed)}
-                    addNewSubreddit={subreddit => this.addNewSubreddit(subreddit)}
-                />
+                <Footer />
             </div>
         );
     }
