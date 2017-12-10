@@ -5,6 +5,17 @@ import Rss from '../news_sources/rss';
 import _ from 'lodash';
 
 class AddNewsSource extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            subredditName: '',
+        };
+    }
+
+    handleSubredditNameChange(event) {
+        this.setState({subredditName: event.target.value});
+    }
+
     render() {
         return (
             <div id="accordion" role="tablist">
@@ -18,7 +29,7 @@ class AddNewsSource extends Component {
                     </div>
                     <div id="collapseOne" className="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
                         <div className="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                            new rss
                         </div>
                     </div>
                     <div className="card-header" role="tab" id="headingTwo">
@@ -31,6 +42,13 @@ class AddNewsSource extends Component {
                     <div id="collapseTwo" className="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
                         <div className="card-body">
                             Add a subreddit to include that subreddit's current top 10 Hot posts.
+                            <div>
+                                <input type="text" value={this.state.subredditName} onChange={this.handleSubredditNameChange.bind(this)} />
+                                <button onClick={() => {
+                                    this.props.addNewSubreddit(this.state.subredditName);
+                                    this.setState({ subredditName: '' });
+                                }}>Add Subreddit</button>
+                            </div>
                         </div>
                     </div>
                 </div>

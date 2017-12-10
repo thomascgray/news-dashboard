@@ -86,8 +86,16 @@ class Home extends Component {
         
     }
 
-    addNewSubreddit(subreddit) {
-        
+    addNewSubreddit(subredditName) {
+        const loadedNewsSources = _.cloneDeep(this.state.loadedNewsSources);
+        loadedNewsSources.push({
+            type: 'subreddit',
+            title: `/r/${subredditName}`,
+            meta: {
+                subreddit: subredditName,
+            },
+        });
+        this.setState({ loadedNewsSources }, () => this.refreshAllPanels());
     }
 
     render() {
