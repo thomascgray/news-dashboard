@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Panel from '../panel/panel';
+import Panel from '../components/panel';
 import Rss from '../news_sources/rss';
 import Subreddit from '../news_sources/subreddit';
 import _ from 'lodash';
@@ -55,7 +55,7 @@ class Home extends Component {
     fulfillNewsSource(newsSource) {
         switch (newsSource.type) {
             case 'rss': 
-                return Rss.fulfill(newsSource.meta);
+                return Rss.fulfill(newsSource);
             case 'subreddit': 
                 return Subreddit.fulfill(newsSource.meta);
             default:
@@ -107,8 +107,6 @@ class Home extends Component {
                     <div className='row'>
                         {this.state.panels}
                     </div>
-
-                    
 
                     <LoadUnloadNewsSources
                         removeNewsSource={newsSource => this.removeNewsSource(newsSource)}

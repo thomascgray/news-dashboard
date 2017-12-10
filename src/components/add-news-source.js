@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import Panel from '../panel/panel';
-import Rss from '../news_sources/rss';
 import _ from 'lodash';
 
 class AddNewsSource extends Component {
@@ -62,7 +60,7 @@ class AddNewsSource extends Component {
                     </div>
                     <div id="collapseTwo" className="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
                         <div className="card-body">
-                            Add a subreddit to include that subreddit's current top 10 Hot posts.
+                            <p>Add a subreddit to include that subreddit's current top 10 Hot posts.</p>
                             <div>
                                 <div className="input-group">
                                     <input type="text" value={this.state.subredditName} onChange={e => {this.updateStateValue('subredditName', e.target.value)}} className="form-control" placeholder="Subreddit" aria-label="Subreddit" />

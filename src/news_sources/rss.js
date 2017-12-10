@@ -7,7 +7,7 @@ class Rss {
         return new Promise((resolve, reject) => {
             $(document).ready(function () {
                 $.ajax({
-                    url: "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rssFeed.url),
+                    url: "https://api.rss2json.com/v1/api.json?rss_url=" + encodeURIComponent(rssFeed.meta.url),
                     dataType: "jsonp",
                 }).fail((xhr, status, error) => {
                     return reject();
@@ -20,7 +20,7 @@ class Rss {
                         };
                     });
                     const data = {
-                        title: response.feed.title,
+                        title: rssFeed.title,
                     };
     
                     return resolve({

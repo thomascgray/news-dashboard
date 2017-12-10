@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './panel.css';
 
-class PanelTemplate extends Component {
+class Panel extends Component {
     render() {
         const contentBlocks = this.props.linkset.map(link => {
             return (
@@ -24,4 +24,4 @@ class PanelTemplate extends Component {
     }
 }
   
-export default PanelTemplate;
+export default Panel;
