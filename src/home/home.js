@@ -85,7 +85,6 @@ class Home extends Component {
             },
         };
         loadedNewsSources.push(newsSource);
-        console.log(loadedNewsSources);
         this.setState({ loadedNewsSources }, () => this.refreshAllPanels());
     }
 

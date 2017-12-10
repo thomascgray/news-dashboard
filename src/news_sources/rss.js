@@ -1,4 +1,5 @@
 import Promise from 'bluebird';
+import StripTags from 'striptags';
 import $ from 'jquery';
 
 class Rss {
@@ -14,7 +15,7 @@ class Rss {
                     const links = response.items.map(item => {
                         return {
                             title: item.title,
-                            description: item.description,
+                            description: StripTags(item.description),
                             url: item.link,
                         };
                     });
