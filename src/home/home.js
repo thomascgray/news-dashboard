@@ -15,16 +15,9 @@ class Home extends Component {
             loadedNewsSources: [
                 {
                     type: 'rss',
-                    title: 'BBC News',
+                    title: 'CNN',
                     meta: {
-                        url: 'http://feeds.bbci.co.uk/news/rss.xml?edition=uk'
-                    },
-                },
-                {
-                    type: 'rss',
-                    title: 'Rock, Paper, Shotgun',
-                    meta: {
-                        url: 'http://feeds.feedburner.com/RockPaperShotgun',
+                        url: 'http://rss.cnn.com/rss/edition.rss',
                     },
                 },
                 {
@@ -82,8 +75,16 @@ class Home extends Component {
         });
     }
     
-    addNewRssFeed(rssFeed) {
-        
+    addNewRssFeed(name, url) {
+        const loadedNewsSources = _.cloneDeep(this.state.loadedNewsSources);
+        loadedNewsSources.push({
+            type: 'rss',
+            title: name,
+            meta: {
+                url: url,
+            },
+        });
+        this.setState({ loadedNewsSources }, () => this.refreshAllPanels());
     }
 
     addNewSubreddit(subredditName) {
