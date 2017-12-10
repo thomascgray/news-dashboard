@@ -64,12 +64,14 @@ class AddNewsSource extends Component {
                         <div className="card-body">
                             Add a subreddit to include that subreddit's current top 10 Hot posts.
                             <div>
-                                <input type="text" value={this.state.subredditName} onChange={e => {this.updateStateValue('subredditName', e.target.value)}} />
-
+                                <div className="input-group">
+                                    <input type="text" value={this.state.subredditName} onChange={e => {this.updateStateValue('subredditName', e.target.value)}} className="form-control" placeholder="Subreddit" aria-label="Subreddit" />
+                                </div>
+                                <br />
                                 <button onClick={() => {
                                     this.props.addNewSubreddit(this.state.subredditName);
                                     this.setState({ subredditName: '' });
-                                }}>Add Subreddit</button>
+                                }} type="button" className="btn btn-primary">Add Subreddit</button>
                             </div>
                         </div>
                     </div>
