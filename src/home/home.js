@@ -75,15 +75,17 @@ class Home extends Component {
         });
     }
     
-    addNewRssFeed(name, url) {
+    addNewRssFeed(rssFeed) {
         const loadedNewsSources = _.cloneDeep(this.state.loadedNewsSources);
-        loadedNewsSources.push({
+        const newsSource = {
             type: 'rss',
-            title: name,
+            title: rssFeed.title,
             meta: {
-                url: url,
+                url: rssFeed.url,
             },
-        });
+        };
+        loadedNewsSources.push(newsSource);
+        console.log(loadedNewsSources);
         this.setState({ loadedNewsSources }, () => this.refreshAllPanels());
     }
 

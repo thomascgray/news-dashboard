@@ -33,15 +33,23 @@ class AddNewsSource extends Component {
                     </div>
                     <div id="collapseOne" className="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
                         <div className="card-body">
-                            new rss
+                            <p>Add a new RSS Feed to get all the posts from that feed</p>
                             <div>
-                                <input type="text" value={this.state.rssName} onChange={e => {this.updateStateValue('rssName', e.target.value)}} />
-                                <input type="text" value={this.state.rssUrl} onChange={e => {this.updateStateValue('rssUrl', e.target.value)}} />
-
+                                <div className="input-group">
+                                    <input type="text" value={this.state.rssName} onChange={e => {this.updateStateValue('rssName', e.target.value)}} className="form-control" placeholder="RSS Feed Name" aria-label="RSS Feed Name" />
+                                </div>
+                                <br />
+                                <div className="input-group">
+                                    <input type="text" value={this.state.rssUrl} onChange={e => {this.updateStateValue('rssUrl', e.target.value)}} className="form-control" placeholder="RSS URL" aria-label="RSS URL" />
+                                </div>
+                                <br />
                                 <button onClick={() => {
-                                    this.props.addNewRssFeed(this.state.rssName, this.state.rssUrl);
+                                    this.props.addNewRssFeed({
+                                        title: this.state.rssName,
+                                        url: this.state.rssUrl,
+                                    });
                                     this.setState({ rssName: '', rssUrl: '' });
-                                }}>Add RSS Feed</button>
+                                }} type="button" className="btn btn-primary">Add RSS Feed</button>
                             </div>
                         </div>
                     </div>
