@@ -1,0 +1,24 @@
+.theme-switcher {
+  position: absolute;
+  top: 0;
+  right: 0;
+  @mixin button($fg, $bg) {
+    background: $bg;
+    color: $fg;
+    border: 2px solid $fg;
+    transition: all 0.1s ease-out;
+    cursor: pointer;
+    user-select: none;
+    text-transform: capitalize;
+  }
+  .button {
+    @include button(white, black);
+    &--dark {
+      @include button(black, white);
+    }
+    &:hover,
+    &:focus {
+      border-color: transparent;
+    }
+  }
+}
