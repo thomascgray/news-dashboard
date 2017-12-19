@@ -9,6 +9,8 @@
     "compromise": "^11.1.0",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
+    "node-sass": "^4.7.2",
+    "npm-run-all": "^4.1.2",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-scripts": "1.0.17",
@@ -17,7 +19,10 @@
     "striptags": "^3.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm-run-all --parallel start:*",
+    "start:react": "react-scripts start",
+    "start:scss":
+      "node-sass src/ --output src/ --output-style compressed --watch",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

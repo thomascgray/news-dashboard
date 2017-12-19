@@ -1,12 +1,15 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
 
-import Home from './home/home';
+import Home from "./home/home";
+import ThemeSwitcher from "./components/themeSwitcher.js";
 
 class App extends Component {
   render() {
     return (
-      <Home />
+      <main>
+        <ThemeSwitcher />
+        <Home />
+      </main>
     );
   }
 }

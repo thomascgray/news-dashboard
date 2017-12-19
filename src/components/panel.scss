@@ -1,0 +1,41 @@
+.container {
+  padding-top: 1em;
+}
+
+.panel h2 {
+  color: #95a5a6;
+}
+
+.panel__link {
+  display: block;
+  text-decoration: none;
+  color: black;
+
+  &:not(:last-child) {
+    margin-bottom: 1em;
+  }
+}
+
+.panel__link__link_holder {
+  padding: 0.5em;
+  padding-left: 0;
+  &:hover {
+    background: #ecf0f1;
+  }
+  p {
+    margin: 0;
+  }
+  &__title {
+    font-weight: bold;
+    font-size: medium;
+    color: #2c3e50;
+  }
+  &__description {
+    /* margin-left:0.5em; */
+    font-size: small;
+  }
+}
+
+.col-md.panel {
+  margin-top: 2em;
+}
