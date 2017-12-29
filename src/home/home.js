@@ -6,6 +6,7 @@ import Subreddit from '../news_sources/subreddit';
 import _ from 'lodash';
 import LoadUnloadNewsSources from '../components/load-unload-news-sources';
 import Footer from '../components/footer';
+import Store from 'store';
 
 class Home extends Component {
     constructor(props) {
@@ -41,6 +42,7 @@ class Home extends Component {
             return this.fulfillNewsSource(newsSource);
         }).forEach(fulfilledNewsSource => {
             fulfilledNewsSource.then(panelData => {
+                console.log('panelData', panelData);
                 panels.push(<Panel key={panelData.data.title} linkset={panelData.links} data={panelData.data} />);
                 this.setState({ panels });
             });
@@ -48,19 +50,30 @@ class Home extends Component {
     }
 
     /**
-     * given a key for a panel, return the promise from that panels
-     * fulfiller .fulfill() method
-     * @param {string} panelKey 
+     * 
+     * @param {string} newsSource 
      */
-    fulfillNewsSource(newsSource) {
+    async fulfillNewsSource(newsSource) {
+        const cachedData = Store.get(newsSource);
+        if (this.isCachedDataValid(cachedData)) {
+            console.log(cachedData);
+            return cachedData;
+        }
+
+        let body;
         switch (newsSource.type) {
             case 'rss': 
-                return Rss.fulfill(newsSource);
+                body = await Rss.fulfill(newsSource);
+                break;
             case 'subreddit': 
-                return Subreddit.fulfill(newsSource.meta);
+                body = await Subreddit.fulfill(newsSource.meta);
+                break;
             default:
-                return Promise.reject();
+                body = await Promise.reject();
+                break;
         }
+        Store.set(newsSource, body);
+        return body;
     }
 
     componentWillMount() {
@@ -73,6 +86,12 @@ class Home extends Component {
         this.setState({ loadedNewsSources }, () => {
             this.refreshAllPanels();
         });
+    }
+
+    isCachedDataValid(cachedData) {
+        if (cachedData) {
+            return cachedData;
+        }
     }
     
     addNewRssFeed(rssFeed) {
