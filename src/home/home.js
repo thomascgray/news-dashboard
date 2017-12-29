@@ -14,22 +14,7 @@ class Home extends Component {
         super(props);
         this.state = {
             panels: [],
-            loadedNewsSources: [
-                {
-                    type: 'rss',
-                    title: 'CNN',
-                    meta: {
-                        url: 'http://rss.cnn.com/rss/edition.rss',
-                    },
-                },
-                {
-                    type: 'subreddit',
-                    title: '/r/webdev',
-                    meta: {
-                        subreddit: 'webdev',
-                    },
-                }
-            ],
+            loadedNewsSources: Store.get('loadedNewsSources') || [],
         };
     }
 
@@ -59,7 +44,6 @@ class Home extends Component {
         if (this.isCachedDataValid(cachedData)) {
             const timestamp = Moment(cachedData.timestamp);
             if (timestamp.isAfter(Moment().subtract(10, 'minutes'))) {
-                console.log('using cache');
                 return cachedData.body;
             }
         }
@@ -77,9 +61,7 @@ class Home extends Component {
                 break;
         }
 
-        console.log('updating cache');
-        // if we've just fetched new results, update the cache
-        Store.set(this.getStoreKeyForNewsSource(newsSource), {
+        Store.set(this.getStoreKeyForNewsSource(newsSource), { // if we've just fetched new results, update the cache
             body,
             timestamp: Moment(),
         });
@@ -100,6 +82,7 @@ class Home extends Component {
         _.remove(loadedNewsSources, k => k.title === newsSourceToRemove.title);
         this.setState({ loadedNewsSources }, () => {
             this.refreshAllPanels();
+            Store.set('loadedNewsSources', this.state.loadedNewsSources);
         });
     }
 
@@ -119,7 +102,10 @@ class Home extends Component {
             },
         };
         loadedNewsSources.push(newsSource);
-        this.setState({ loadedNewsSources }, () => this.refreshAllPanels());
+        this.setState({ loadedNewsSources }, () => {
+            this.refreshAllPanels();
+            Store.set('loadedNewsSources', this.state.loadedNewsSources);
+        });
     }
 
     addNewSubreddit(subredditName) {
@@ -131,7 +117,10 @@ class Home extends Component {
                 subreddit: subredditName,
             },
         });
-        this.setState({ loadedNewsSources }, () => this.refreshAllPanels());
+        this.setState({ loadedNewsSources }, () => {
+            this.refreshAllPanels();
+            Store.set('loadedNewsSources', this.state.loadedNewsSources);
+        });
     }
 
     render() {
