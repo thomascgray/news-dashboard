@@ -7,6 +7,7 @@ import _ from 'lodash';
 import LoadUnloadNewsSources from '../components/load-unload-news-sources';
 import Footer from '../components/footer';
 import Store from 'store';
+import Moment from 'moment';
 
 class Home extends Component {
     constructor(props) {
@@ -54,10 +55,13 @@ class Home extends Component {
      * @param {string} newsSource 
      */
     async fulfillNewsSource(newsSource) {
-        const cachedData = Store.get(newsSource);
+        const cachedData = Store.get(this.getStoreKeyForNewsSource(newsSource));
         if (this.isCachedDataValid(cachedData)) {
-            console.log(cachedData);
-            return cachedData;
+            const timestamp = Moment(cachedData.timestamp);
+            if (timestamp.isAfter(Moment().subtract(10, 'minutes'))) {
+                console.log('using cache');
+                return cachedData.body;
+            }
         }
 
         let body;
@@ -72,8 +76,19 @@ class Home extends Component {
                 body = await Promise.reject();
                 break;
         }
-        Store.set(newsSource, body);
+
+        console.log('updating cache');
+        // if we've just fetched new results, update the cache
+        Store.set(this.getStoreKeyForNewsSource(newsSource), {
+            body,
+            timestamp: Moment(),
+        });
+
         return body;
+    }
+
+    getStoreKeyForNewsSource(newsSource) {
+        return JSON.stringify(newsSource);
     }
 
     componentWillMount() {
